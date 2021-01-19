@@ -8,6 +8,7 @@ const twitchid = document.querySelector('#twitchid')
 const switchID = document.querySelector('#switchID')
 const pitchRange = document.querySelector('#pitchRange')
 const speedRange = document.querySelector('#speedRange')
+const volumeRange = document.querySelector('#volumeRange')
 const pitchValue = document.querySelector('#pitchValue') 
 const speedValue = document.querySelector('#speedValue') 
 pitchValue.textContent = pitchRange.value
@@ -17,6 +18,8 @@ let customChannel = ''
 let listeningForCount = true
 let vPitch = 1
 let vSpeed = 1
+let vVolume = 1
+let maxLength=60
 const users = {}
 const synth = window.speechSynthesis;
 pitchRange.addEventListener('input' ,function(){
@@ -26,6 +29,9 @@ pitchRange.addEventListener('input' ,function(){
 speedRange.addEventListener('input' ,function(){
   speedValue.textContent = speedRange.value
   vSpeed = speedRange.value
+})
+volumeRange.addEventListener('input' , function(){
+  vVolume = volumeRange.value
 })
 switchID.addEventListener('click',function(){
   startChat(twitchid.value)
@@ -58,38 +64,53 @@ const startChat = (channel) => {
     if(self) return true;
     const { username }  = tags
   
-    if(username === 'Nightbot' || 'StreamElements' ) return
+    if(username === 'Nightbot' || username === 'StreamElements' ) return
 
     if(listeningForCount && message){
       console.log(message)
       checkMessage(message)
-
     }
   });
   
 }
 
-
 const createSpeak = (msg) => {
+ 
   let u = new SpeechSynthesisUtterance();
   u.text = msg;
+  
   let voices = synth.getVoices();
   for(let index = 0; index < voices.length; index++) {
     if(voices[index].name == "Google 國語（臺灣）"){       
       u.voice = voices[index];
       u.pitch = vPitch
       u.rate  = vSpeed
+      u.volume  = vVolume
       break;
     }else{
       u.lang = 'zh-TW';
     }
   }
-  synth.speak(u);
+  synth.speak(u)
+  function _wait(){
+    if(!synth.speaking){
+      synth.cancel()
+      return
+    }
+    window.setTimeout(_wait , 200)
+  }
+  _wait();
+ 
+
+  
+  
 };
 const checkMessage = (msg) => {
   if(is_url(msg)){
     createSpeak('連結懶得念')
-  }else{
+  }else if (msg.length > maxLength){
+    createSpeak(msg.substring(0,maxLength))
+  }else {
     createSpeak(msg)
   }
 }
