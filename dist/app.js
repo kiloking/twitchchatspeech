@@ -64,9 +64,9 @@ const startChat = (channel) => {
     if(self) return true;
     const { username }  = tags
   
-    if(username === 'Nightbot' || username === 'StreamElements' ) return
-
-    if(listeningForCount && message){
+    if(username === 'Nightbot' || username === 'StreamElements' || username === 'nightbot' || username === 'streamelements' ) {
+      return
+    } else if(listeningForCount && message){
       console.log(message)
       checkMessage(message)
     }
