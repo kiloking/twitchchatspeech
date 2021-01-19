@@ -14,12 +14,12 @@
         <input type="text" id="twitchid" class="form-control" placeholder="Twitch Channel ID" aria-label="Username" aria-describedby="basic-addon1">
       </div>
       <div class="mb-3">
-        <label for="customRange3" class="form-label">音調</label>
-        <input type="range" class="form-range" min="-5" max="5" step="1" id="customRange3">
+        <label for="customRange3" class="form-label">音調 = </label><span id="pitchValue"></span>
+        <input type="range" class="form-range" min="-2" max="2" step="0.1" id="pitchRange" value=1>
       </div>
       <div class="mb-3">
-        <label for="customRange3" class="form-label">速度</label>
-        <input type="range" class="form-range" min="-5" max="5" step="1" id="customRange3">
+        <label for="customRange3" class="form-label">速度 = </label><span id="speedValue"></span>
+        <input type="range" class="form-range" min="-2" max="2" step="0.1" id="speedRange" value=1>
       </div>
       
       <button type="button" id="switchID" class="btn btn-primary">開始</button>

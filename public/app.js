@@ -6,14 +6,28 @@
 
 const twitchid = document.querySelector('#twitchid')
 const switchID = document.querySelector('#switchID')
+const pitchRange = document.querySelector('#pitchRange')
+const speedRange = document.querySelector('#speedRange')
+const pitchValue = document.querySelector('#pitchValue') 
+const speedValue = document.querySelector('#speedValue') 
+pitchValue.textContent = pitchRange.value
+speedValue.textContent = speedRange.value
 const status = document.querySelector('.status')
 let customChannel = ''
 let listeningForCount = true
+let vPitch = 1
+let vSpeed = 1
 const users = {}
 const synth = window.speechSynthesis;
-
+pitchRange.addEventListener('input' ,function(){
+  pitchValue.textContent = pitchRange.value
+  vPitch = pitchRange.value
+})
+speedRange.addEventListener('input' ,function(){
+  speedValue.textContent = speedRange.value
+  vSpeed = speedRange.value
+})
 switchID.addEventListener('click',function(){
-  console.log('1')
   startChat(twitchid.value)
 })
 
@@ -38,13 +52,14 @@ const startChat = (channel) => {
       console.log('error')
       status.innerHTML = 'error'
     })
-
+  client.readyState()
   client.on('message', (channel, tags, message, self) => {
     // "Alca: Hello, World!"
     if(self) return true;
     const { username }  = tags
   
-    if(username === 'Nightbot' ) return
+    if(username === 'Nightbot' || 'StreamElements' ) return
+
     if(listeningForCount && message){
       console.log(message)
       checkMessage(message)
@@ -62,6 +77,8 @@ const createSpeak = (msg) => {
   for(let index = 0; index < voices.length; index++) {
     if(voices[index].name == "Google 國語（臺灣）"){       
       u.voice = voices[index];
+      u.pitch = vPitch
+      u.rate  = vSpeed
       break;
     }else{
       u.lang = 'zh-TW';
